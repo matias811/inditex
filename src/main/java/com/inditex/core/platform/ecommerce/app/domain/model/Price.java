@@ -1,5 +1,6 @@
 package com.inditex.core.platform.ecommerce.app.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,9 +33,11 @@ public class Price {
     private Integer brandId;
 
     @Column(name = "START_DATE", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // Format the date field as needed
     private LocalDateTime startDate;
 
     @Column(name = "END_DATE", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // Format the date field as needed
     private LocalDateTime endDate;
 
     @Column(name = "PRICE_LIST", nullable = false)
