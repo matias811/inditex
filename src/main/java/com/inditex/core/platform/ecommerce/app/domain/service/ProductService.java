@@ -5,6 +5,7 @@ import com.inditex.core.platform.ecommerce.app.domain.repository.ProductReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +23,8 @@ public class ProductService {
     /**
      * This method obtains the price for a product and specific brand given a date
      *
-     * @param productId   ID of product
-     * @param brandId     ID of product brand
+     * @param productId       ID of product
+     * @param brandId         ID of product brand
      * @param applicationDate Date
      * @return Applicable Price
      */
@@ -48,14 +49,13 @@ public class ProductService {
      * @return Product
      */
     public Product saveProduct(Product product) {
-
-        LOGGER.info("Product Service - Creating new product with request : {}", product);
-
-        Product newProduct = productRepository.save(product);
-
-        LOGGER.info("Product Service - Product created : {}", newProduct);
-
-        return newProduct;
+        try {
+            LOGGER.info("Product Service - Creating new product with request : {}", product);
+            return productRepository.save(product);
+        } catch (Exception e) {
+            LOGGER.error("Error saving product: {}", e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -64,17 +64,17 @@ public class ProductService {
      * @param id
      */
     public void deleteProduct(Long id) {
-
-        LOGGER.info("Product Service - Deleting product with id : {}", id);
+        LOGGER.info("Product Service - Deleting product with ID : {}", id);
 
         Optional<Product> product = productRepository.findById(id);
-
         if (product.isPresent()) {
-            LOGGER.info("Product Service - Product found with id : {}", id);
+            LOGGER.info("Product Service - Product found with ID : {}", id);
             productRepository.deleteById(id);
-            LOGGER.info("Product Service - Product with id {} deleted from database.", id);
+            LOGGER.info("Product Service - Product deleted with ID : {}", id);
         } else {
-            LOGGER.info("Product Service - No product was found with id : {}", id);
+            LOGGER.error("Product Service - Product not found with ID : {}", id);
+            throw new IllegalArgumentException("Product not found");
         }
     }
+
 }

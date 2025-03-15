@@ -2,12 +2,15 @@ package com.inditex.core.platform.ecommerce.app.domain.controller;
 
 import com.inditex.core.platform.ecommerce.app.domain.model.Product;
 import com.inditex.core.platform.ecommerce.app.domain.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,25 +52,42 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
         LOGGER.info("Product Controller - Received request : {}", product);
+
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Invalid product fields: ");
+            bindingResult.getAllErrors().forEach(error ->
+                    errorMessage.append(error.getDefaultMessage()).append("; ")
+            );
+            LOGGER.error("Product Controller - Validation failed: {}", errorMessage);
+
+            return ResponseEntity.badRequest().body(errorMessage.toString());
+        }
 
         Product savedProduct = productService.saveProduct(product);
 
-        LOGGER.info("Product Controller - Product saved in database.");
-
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        if (savedProduct == null) {
+            LOGGER.error("Product Controller - Error creating product.");
+            return ResponseEntity.badRequest().body("Error creating product.");
+        } else {
+            LOGGER.info("Product Controller - Product saved in database.");
+            return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-
         LOGGER.info("Product Controller - Deleting product with ID : {}", id);
 
-        productService.deleteProduct(id);
-
-        LOGGER.info("Product Controller - Product deleted from database.");
-
-        return ResponseEntity.noContent().build();
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Product Controller - Error: Product not found with ID {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
+
 }
