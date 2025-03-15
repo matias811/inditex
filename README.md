@@ -1,6 +1,7 @@
+
 # Price Service API for INDITEX test
 
-This is a Spring Boot application that provides a REST API to retrieve the applicable price for a product based on the given product ID, brand ID, and application date.
+This is a Spring Boot application that provides a REST API to retrieve the applicable price for a product based on the given product ID, brand ID, and application date, as well as the ability to create and delete products.
 
 ## Project Setup
 
@@ -13,16 +14,24 @@ This is a Spring Boot application that provides a REST API to retrieve the appli
 ### Installation
 
 1. Clone the repository:
+   ```bash
    git clone git@github.com:matias811/inditex.git
+   ```
 
 2. Navigate to the project directory:
+   ```bash
    cd <project-directory>
+   ```
 
 3. Build the project with Maven:
+   ```bash
    mvn clean install
+   ```
 
 4. Run the application:
+   ```bash
    mvn spring-boot:run
+   ```
 
 The application will start on `http://localhost:8080`.
 
@@ -32,7 +41,9 @@ The application will start on `http://localhost:8080`.
 
 The base URL for the API is:
 
+```
 http://localhost:8080
+```
 
 ### Endpoints
 
@@ -51,9 +62,12 @@ This endpoint returns the applicable price for a given product ID, brand ID, and
   - If no applicable price is found, a `204 No Content` response will be returned.
 
 ##### Example Request:
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-14T10:00:00"
+```
 
 ##### Example Response (when a price is found):
+```json
 {
   "id": 1,
   "brandId": 1,
@@ -65,32 +79,100 @@ curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicati
   "price": 35.50,
   "currency": "EUR"
 }
+```
 
 ##### Example Response (when no price is found):
+```json
 {
   "message": "No price found for the given criteria."
 }
+```
 
-## Tests
+#### 2. **Create Product**
+This endpoint allows you to create a new product.
+
+- **Endpoint**: `/products`
+- **Method**: `POST`
+- **Request Body**: JSON format containing product details.
+- **Response**: The newly created product object.
+
+##### Example Request:
+```bash
+curl -X POST http://localhost:8080/products      -H "Content-Type: application/json"      -d '{
+           "id": 1,
+           "brandId": 2,
+           "productId": 37055,
+           "priceList": 1,
+           "priority": 0,
+           "price": 37.50,
+           "currency": "EUR",
+           "startDate": "2020-06-14T00:00:00",
+           "endDate": "2020-12-31T23:59:59"
+         }'
+```
+
+##### Example Response:
+```json
+{
+  "id": 1,
+  "brandId": 2,
+  "productId": 37055,
+  "priceList": 1,
+  "priority": 0,
+  "price": 37.50,
+  "currency": "EUR",
+  "startDate": "2020-06-14T00:00:00",
+  "endDate": "2020-12-31T23:59:59"
+}
+```
+
+#### 3. **Delete Product**
+This endpoint allows you to delete a product by its ID.
+
+- **Endpoint**: `/products/{id}`
+- **Method**: `DELETE`
+- **Path Variable**: `id` (Long) - The ID of the product to delete.
+
+##### Example Request:
+```bash
+curl -X DELETE http://localhost:8080/products/1
+```
+
+##### Example Response: 
+```json
+{}
+```
+
+### Tests
 
 You can test the API with the following cases:
 
-### Test 1: Request at 10:00 on June 14 for product 35455 and brand 1 (ZARA).
+#### Test 1: Request at 10:00 on June 14 for product 35455 and brand 1 (ZARA).
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-14T10:00:00"
+```
 
-### Test 2: Request at 16:00 on June 14 for product 35455 and brand 1 (ZARA).
+#### Test 2: Request at 16:00 on June 14 for product 35455 and brand 1 (ZARA).
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-14T16:00:00"
+```
 
-### Test 3: Request at 21:00 on June 14 for product 35455 and brand 1 (ZARA).
+#### Test 3: Request at 21:00 on June 14 for product 35455 and brand 1 (ZARA).
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-14T21:00:00"
+```
 
-### Test 4: Request at 10:00 on June 15 for product 35455 and brand 1 (ZARA).
+#### Test 4: Request at 10:00 on June 15 for product 35455 and brand 1 (ZARA).
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-15T10:00:00"
+```
 
-### Test 5: Request at 21:00 on June 16 for product 35455 and brand 1 (ZARA).
+#### Test 5: Request at 21:00 on June 16 for product 35455 and brand 1 (ZARA).
+```bash
 curl -X GET "http://localhost:8080/get-price?productId=35455&brandId=1&applicationDate=2020-06-16T21:00:00"
+```
 
-## Database Schema
+### Database Schema
 
 This application uses an H2 in-memory database to store price data.
 
@@ -123,9 +205,9 @@ This application uses **SLF4J** and **Logback** for logging. The logs are printe
 
 ### Example Logs
 
-Price Controller - Received request with productId=35455, brandId=1, applicationDate=2020-06-14T16:00
-Price Service - Starting call to find applicable prices.
-Price Service - Price recovered : 25.45
+Price Controller - Received request with productId=35455, brandId=1, applicationDate=2020-06-14T16:00  
+Price Service - Starting call to find applicable prices.  
+Price Service - Price recovered : 25.45  
 Price Controller - Found price: 25.45
 
 ## Conclusion
