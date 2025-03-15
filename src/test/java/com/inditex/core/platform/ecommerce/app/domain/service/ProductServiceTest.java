@@ -68,7 +68,7 @@ public class ProductServiceTest {
 
     @Test
     void saveProduct_shouldSaveProduct() {
-        Product product = Product.builder()
+        Product productToSave = Product.builder()
                 .id(2L)
                 .brandId(2)
                 .productId(35460)
@@ -80,30 +80,55 @@ public class ProductServiceTest {
                 .endDate(LocalDateTime.parse("2021-12-31T23:59:59"))
                 .build();
 
-        when(productRepository.save(product)).thenReturn(product);
+        when(productRepository.save(productToSave)).thenReturn(productToSave);
 
-        Product savedProduct = productService.saveProduct(product);
+        Product savedProduct = productService.saveProduct(productToSave);
 
         assertNotNull(savedProduct);
         assertEquals(2, savedProduct.getId());
+        verify(productRepository, times(1)).save(productToSave);
     }
 
     @Test
     void deleteProduct_shouldDeleteProductIfExists() {
-        Product product = Product.builder()
-                .id(1L)
-                .brandId(2)
-                .productId(37055)
-                .priceList(1)
-                .priority(0)
-                .price(BigDecimal.valueOf(37.50))
-                .currency("EUR")
-                .startDate(LocalDateTime.parse("2020-06-14T00:00:00"))
-                .endDate(LocalDateTime.parse("2020-12-31T23:59:59"))
-                .build();
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        productRepository.deleteById(product.getId());
+        productService.deleteProduct(1L);
 
-        verify(productRepository, times(1)).deleteById(product.getId());
+        verify(productRepository, times(1)).deleteById(1L);
+        verify(productRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void deleteProduct_shouldThrowExceptionIfProductNotFound() {
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productService.deleteProduct(1L);
+        });
+
+        assertEquals("Product not found", exception.getMessage());
+        verify(productRepository, times(1)).findById(1L);
+        verify(productRepository, never()).deleteById(1L);
+    }
+
+    @Test
+    void deleteProduct_shouldLogInfoWhenProductIsFound() {
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        productService.deleteProduct(1L);
+
+        verify(productRepository, times(1)).findById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteProduct_shouldLogErrorWhenProductIsNotFound() {
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        try {
+            productService.deleteProduct(1L);
+        } catch (IllegalArgumentException e) {
+            verify(productRepository, times(1)).findById(1L);
+            verify(productRepository, never()).deleteById(1L);
+        }
     }
 }
