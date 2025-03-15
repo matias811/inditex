@@ -1,7 +1,7 @@
 package com.inditex.core.platform.ecommerce.app.domain.controller;
 
-import com.inditex.core.platform.ecommerce.app.domain.model.Price;
-import com.inditex.core.platform.ecommerce.app.domain.service.PriceService;
+import com.inditex.core.platform.ecommerce.app.domain.model.Product;
+import com.inditex.core.platform.ecommerce.app.domain.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,23 +19,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PriceControllerTest {
+public class ProductControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
-    private PriceService priceService;
+    private ProductService productService;
 
     @InjectMocks
-    private PriceController priceController;
+    private ProductController priceController;
 
-    private Price price;
+    private Product product;
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(priceController).build();
 
-        price = Price.builder()
+        product = Product.builder()
                 .id(1L)
                 .brandId(1)
                 .productId(35455)
@@ -50,8 +50,8 @@ public class PriceControllerTest {
 
     @Test
     public void testGetPrice_found() throws Exception {
-        when(priceService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T10:00:00")))
-                .thenReturn(price);
+        when(productService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T10:00:00")))
+                .thenReturn(product);
 
         mockMvc.perform(get("/get-price")
                         .param("productId", "35455")
@@ -64,7 +64,7 @@ public class PriceControllerTest {
 
     @Test
     public void testGetPrice_notFound() throws Exception {
-        when(priceService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T16:00:00")))
+        when(productService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T16:00:00")))
                 .thenReturn(null);
 
         mockMvc.perform(get("/get-price")

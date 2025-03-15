@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Price {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +33,11 @@ public class Price {
     private Integer brandId;
 
     @Column(name = "START_DATE", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // Format the date field as needed
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
 
     @Column(name = "END_DATE", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // Format the date field as needed
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
 
     @Column(name = "PRICE_LIST", nullable = false)
