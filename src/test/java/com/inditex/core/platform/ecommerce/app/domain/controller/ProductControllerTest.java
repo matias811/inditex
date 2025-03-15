@@ -53,7 +53,7 @@ public class ProductControllerTest {
         when(productService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T10:00:00")))
                 .thenReturn(product);
 
-        mockMvc.perform(get("/get-price")
+        mockMvc.perform(get("/products/get-price")
                         .param("productId", "35455")
                         .param("brandId", "1")
                         .param("applicationDate", "2020-06-14T10:00:00"))
@@ -67,7 +67,7 @@ public class ProductControllerTest {
         when(productService.getApplicablePrice(35455, 1, LocalDateTime.parse("2020-06-14T16:00:00")))
                 .thenReturn(null);
 
-        mockMvc.perform(get("/get-price")
+        mockMvc.perform(get("/products/get-price")
                         .param("productId", "35455")
                         .param("brandId", "1")
                         .param("applicationDate", "2020-06-14T16:00:00"))
