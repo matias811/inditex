@@ -1,0 +1,6 @@
+com/inditex/core/platform/ecommerce/app/domain/model/Product.class
+com/inditex/core/platform/ecommerce/app/domain/model/Product$ProductBuilder.class
+com/inditex/core/platform/ecommerce/app/domain/repository/ProductRepository.class
+com/inditex/core/platform/ecommerce/app/EcommerceApplication.class
+com/inditex/core/platform/ecommerce/app/domain/service/ProductService.class
+com/inditex/core/platform/ecommerce/app/domain/controller/ProductController.class
