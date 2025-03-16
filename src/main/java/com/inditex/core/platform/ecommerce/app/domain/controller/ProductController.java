@@ -52,18 +52,8 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product) {
         LOGGER.info("Product Controller - Received request : {}", product);
-
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Invalid product fields: ");
-            bindingResult.getAllErrors().forEach(error ->
-                    errorMessage.append(error.getDefaultMessage()).append("; ")
-            );
-            LOGGER.error("Product Controller - Validation failed: {}", errorMessage);
-
-            return ResponseEntity.badRequest().body(errorMessage.toString());
-        }
 
         Product savedProduct = productService.saveProduct(product);
 

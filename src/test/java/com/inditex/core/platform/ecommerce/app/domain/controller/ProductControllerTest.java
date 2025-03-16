@@ -115,4 +115,17 @@ public class ProductControllerTest {
         mockMvc.perform(delete("/products/{id}", 1L))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void testCreateProduct_errorDuringSave() throws Exception {
+        when(productService.saveProduct(any(Product.class)))
+                .thenReturn(null);
+
+        mockMvc.perform(post("/products")
+                        .contentType("application/json")
+                        .content("{\"productId\":35455, \"priceList\":1, \"priority\":0, \"price\":35.50, \"currency\":\"EUR\", \"startDate\":\"2020-06-14T00:00:00\", \"endDate\":\"2020-12-31T23:59:59\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Error creating product."));
+    }
+
 }

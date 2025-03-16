@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ecommerce,com.inditex.core.platform.ecommerce.app.domain.controller,ProductController,27,97,1,5,5,23,2,7,1,5
+ecommerce,com.inditex.core.platform.ecommerce.app,EcommerceApplication,0,8,0,0,0,3,0,2,0,2
+ecommerce,com.inditex.core.platform.ecommerce.app.domain.service,ProductService,8,84,1,5,3,21,1,7,0,5
+ecommerce,com.inditex.core.platform.ecommerce.app.domain.model,Product,0,144,8,14,0,5,8,6,0,3
