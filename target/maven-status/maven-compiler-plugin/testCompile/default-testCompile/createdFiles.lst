@@ -1,6 +1,0 @@
-com/inditex/core/platform/ecommerce/app/cucumber/steps/ProductStepDefinitions.class
-com/inditex/core/platform/ecommerce/app/domain/model/ProductTest.class
-com/inditex/core/platform/ecommerce/app/EcommerceApplicationTests.class
-com/inditex/core/platform/ecommerce/app/domain/controller/ProductControllerTest.class
-com/inditex/core/platform/ecommerce/app/domain/service/ProductServiceTest.class
-com/inditex/core/platform/ecommerce/app/cucumber/CucumberTest.class
