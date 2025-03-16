@@ -160,4 +160,25 @@ public class ProductServiceTest {
             verify(productRepository, never()).deleteById(1L);
         }
     }
+
+    @Test
+    void saveProduct_shouldReturnNullWhenExceptionOccurs() {
+        Product productToSave = Product.builder()
+                .id(2L)
+                .brandId(2)
+                .productId(35460)
+                .priceList(1)
+                .priority(0)
+                .price(BigDecimal.valueOf(40.50))
+                .currency("EUR")
+                .startDate(LocalDateTime.parse("2020-10-14T00:00:00"))
+                .endDate(LocalDateTime.parse("2021-12-31T23:59:59"))
+                .build();
+
+        when(productRepository.save(productToSave)).thenThrow(new RuntimeException("Database error"));
+        Product savedProduct = productService.saveProduct(productToSave);
+        assertNull(savedProduct);
+        verify(productRepository, times(1)).save(productToSave);
+    }
+
 }
