@@ -12,12 +12,17 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
 
     @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
     /**
@@ -63,6 +68,7 @@ public class ProductService {
      *
      * @param id
      */
+    @Transactional
     public void deleteProduct(Long id) {
         LOGGER.info("Product Service - Deleting product with ID : {}", id);
 
@@ -70,6 +76,7 @@ public class ProductService {
         if (product.isPresent()) {
             LOGGER.info("Product Service - Product found with ID : {}", id);
             productRepository.deleteById(id);
+            productRepository.flush();
             LOGGER.info("Product Service - Product deleted with ID : {}", id);
         } else {
             LOGGER.error("Product Service - Product not found with ID : {}", id);
